@@ -4,22 +4,32 @@ var playerOScore = 0;
 var currentPlayer = "X";
 
 // prettier-ignore
-var board = ["", "", "",
-             "", "", "",
-             "", "", ""
+var board = ["-", "-", "-",
+             "-", "-", "-",
+             "-", "-", "-"
             ];
 
 var firstRow = document.getElementById("row-1");
 var secondRow = document.getElementById("row-2");
 var thirdRow = document.getElementById("row-3");
 
-function clearBoard() {
-  // prettier-ignore
-  board = ["", "", "",
-             "", "", "",
-             "", "", ""
-     ];
+var themeButton = document.getElementById("theme-button");
 
+themeButton.addEventListener("click", () => {
+  if (document.body.className === "dark") {
+    document.body.className = "";
+    return;
+  }
+  document.body.className = "dark";
+});
+
+function clearBoard() {
+  console.log("Cleared");
+  // prettier-ignore
+  board = ["-", "-", "-",
+          "-", "-", "-",
+          "-", "-", "-"
+          ];
   for (let i = 1; i <= 9; i++) {
     var cellElement = document.getElementById(`cell-${i}`);
     cellElement.innerHTML = "";
@@ -31,6 +41,7 @@ function resetGame() {
   playerXScore = 0;
   updateScores();
 
+  console.log("Reseted game");
   clearBoard();
 }
 
@@ -48,11 +59,12 @@ function registerEventListeners(row) {
 function handleClickOnCell(cellId) {
   var cellId = Number(cellId.split("-")[1]) - 1;
 
-  if (board[cellId] !== "") {
+  if (board[cellId] !== "-") {
     return;
   }
 
   board[cellId] = currentPlayer;
+  console.log(board);
   var cellElement = document.getElementById(`cell-${cellId + 1}`);
   var playerMoveElement = document.createElement("div");
   playerMoveElement.className = "mark-" + currentPlayer.toLowerCase();
@@ -63,6 +75,15 @@ function handleClickOnCell(cellId) {
   if (winner) {
     proccessWinner(winner);
   }
+  var isDraw = checkDraw();
+  if (isDraw) {
+    proccessDraw();
+  }
+}
+
+function proccessDraw() {
+  alert("It is draw!");
+  clearBoard();
 }
 
 function proccessWinner(winner) {
@@ -74,6 +95,7 @@ function proccessWinner(winner) {
     alert("Player O wins!");
   }
   updateScores();
+  console.log("proccess winner");
   clearBoard();
 }
 
@@ -83,6 +105,13 @@ function changeTurn() {
   } else {
     currentPlayer = "X";
   }
+}
+
+function checkDraw() {
+  if (!board.includes("-")) {
+    return true;
+  }
+  return false;
 }
 
 function checkWinner() {
@@ -100,6 +129,11 @@ function checkWinner() {
   for (var i = 0; i < winConditions.length; i++) {
     var condition = winConditions[i];
     const [a, b, c] = condition;
+
+    if (board[a] === "-" || board[b] === "-" || board[c] === "-") {
+      continue;
+    }
+
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
       return board[a];
     }
