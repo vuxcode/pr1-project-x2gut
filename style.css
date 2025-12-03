@@ -1,0 +1,81 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+header {
+  background-color: #f8f9fa;
+  padding: 10px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #343a40;
+}
+
+#reset-button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#reset-button:hover {
+  background-color: #0056b3;
+  transition-duration: 0.3s;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 15px auto;
+}
+
+.players-score {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.cell {
+  flex: 1;
+  width: 100%;
+  height: 200px;
+  position: relative;
+  background-color: #e9ecef;
+  border: 2px solid #ced4da;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.mark-x {
+  width: 100%;
+  height: 100%;
+  background-image: url("./images/X.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mark-o {
+  width: 100%;
+  height: 100%;
+  background-image: url("./images/O.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
