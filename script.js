@@ -2,7 +2,7 @@ var playerXScore = 0;
 var playerOScore = 0;
 
 var currentPlayer = "X";
-var gameMode = "Bot";
+var gameMode = "twoPlayers";
 
 // prettier-ignore
 var board = ["-", "-", "-",
@@ -15,6 +15,7 @@ var secondRow = document.getElementById("row-2");
 var thirdRow = document.getElementById("row-3");
 
 var themeButton = document.getElementById("theme-button");
+var gamemodeButton = document.getElementById("gamemode-button");
 
 themeButton.addEventListener("click", () => {
   var innerCircle = document.querySelector(".inner-circle");
@@ -26,6 +27,19 @@ themeButton.addEventListener("click", () => {
   innerCircle.classList.add("visible");
   document.body.className = "dark";
 });
+
+gamemodeButton.addEventListener("click", changeGameMode);
+
+function changeGameMode() {
+  clearBoard();
+  if (gameMode === "twoPlayers") {
+    gameMode = "Bot";
+    gamemodeButton.innerText = "GameMode: 🤖 Bot";
+    return;
+  }
+  gameMode = "twoPlayers";
+  gamemodeButton.innerText = "GameMode: 2 Players";
+}
 
 function clearBoard() {
   console.log("Cleared");
@@ -187,14 +201,6 @@ function checkWinner() {
     }
   }
   return null;
-}
-
-function changeGameMode() {
-  if (gameMode === "twoPlayers") {
-    gameMode = "Bot";
-    return;
-  }
-  gameMode = "twoPlayers";
 }
 
 function updateScores() {
