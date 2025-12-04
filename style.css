@@ -32,6 +32,10 @@ h1 {
   margin: 0;
 }
 
+h1 {
+  margin: 0;
+}
+
 header {
   background-color: var(--header-bg-color);
   padding: 10px;
@@ -68,11 +72,15 @@ header {
   display: flex;
   gap: 5px;
   align-items: center;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .container {
   max-width: 1240px;
   margin: 15px auto;
+  padding-bottom: 20px;
   padding-bottom: 20px;
 }
 
@@ -100,6 +108,7 @@ header {
   position: relative;
   background-color: var(--cell-bg);
   border: 2px solid --cell-border;
+  border: 2px solid --cell-border;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0;
@@ -121,6 +130,29 @@ header {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.sun {
+  position: relative;
+  background-color: yellow;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.inner-circle {
+  position: absolute;
+  background-color: var(--btn-bg);
+  width: 17px;
+  height: 17px;
+  transform: translate(-100%, -100%);
+  border-radius: 50%;
+  transition: all 0.5s ease;
+}
+
+.inner-circle.visible {
+  transform: translate(0%, 0%);
 }
 
 .sun {
