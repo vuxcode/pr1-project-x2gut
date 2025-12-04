@@ -2,6 +2,7 @@ var playerXScore = 0;
 var playerOScore = 0;
 
 var currentPlayer = "X";
+var gameMode = "twoPlayers";
 
 // prettier-ignore
 var board = ["-", "-", "-",
@@ -14,14 +15,31 @@ var secondRow = document.getElementById("row-2");
 var thirdRow = document.getElementById("row-3");
 
 var themeButton = document.getElementById("theme-button");
+var gamemodeButton = document.getElementById("gamemode-button");
 
 themeButton.addEventListener("click", () => {
+  var innerCircle = document.querySelector(".inner-circle");
   if (document.body.className === "dark") {
     document.body.className = "";
+    innerCircle.classList.remove("visible");
     return;
   }
+  innerCircle.classList.add("visible");
   document.body.className = "dark";
 });
+
+gamemodeButton.addEventListener("click", changeGameMode);
+
+function changeGameMode() {
+  clearBoard();
+  if (gameMode === "twoPlayers") {
+    gameMode = "Bot";
+    gamemodeButton.innerText = "GameMode: 🤖 Bot";
+    return;
+  }
+  gameMode = "twoPlayers";
+  gamemodeButton.innerText = "GameMode: 2 Players";
+}
 
 function clearBoard() {
   console.log("Cleared");
@@ -57,28 +75,73 @@ function registerEventListeners(row) {
 }
 
 function handleClickOnCell(cellId) {
-  var cellId = Number(cellId.split("-")[1]) - 1;
+  // Get cell index from cellId for example "cell-1" -> 0
+  const cellIndex = Number(cellId.split("-")[1]) - 1;
 
-  if (board[cellId] !== "-") {
+  // If cell is already taken we do nothing
+  if (board[cellIndex] !== "-") return;
+
+  makeMove(cellIndex, currentPlayer);
+
+  // Here we have a timeout to allow the DOM to update before checking for game end
+  setTimeout(() => {
+    if (checkGameEnd()) return;
+
+    changeTurn();
+
+    if (gameMode === "Bot") {
+      handleBotMove();
+
+      // Same timeout to allow DOM update but after bot move
+      setTimeout(() => {
+        if (checkGameEnd()) return;
+        changeTurn();
+      }, 50);
+    }
+  }, 50);
+}
+
+function handleBotMove() {
+  // ------Simple bot that makes random moves------
+
+  // Here we collect all cells that look like "-" and pushing it to the array
+  let emptyCells = [];
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === "-") {
+      emptyCells.push(i);
+    }
+  }
+  // If there is no empty cells we do nothing
+  if (emptyCells.length === 0) {
     return;
   }
+  // Getting random index from emptyCells array
+  let randomIndex = Math.floor(Math.random() * emptyCells.length);
+  let botMove = emptyCells[randomIndex];
 
-  board[cellId] = currentPlayer;
-  console.log(board);
-  var cellElement = document.getElementById(`cell-${cellId + 1}`);
-  var playerMoveElement = document.createElement("div");
-  playerMoveElement.className = "mark-" + currentPlayer.toLowerCase();
-  cellElement.appendChild(playerMoveElement);
+  makeMove(botMove, currentPlayer);
+}
 
-  changeTurn();
-  var winner = checkWinner();
+function makeMove(index, player) {
+  // Update the board array and the DOM
+  board[index] = player;
+  const cellElement = document.getElementById(`cell-${index + 1}`);
+  const mark = document.createElement("div");
+  mark.className = "mark-" + player.toLowerCase();
+  cellElement.appendChild(mark);
+}
+
+function checkGameEnd() {
+  const winner = checkWinner();
   if (winner) {
     proccessWinner(winner);
+    return true;
   }
-  var isDraw = checkDraw();
-  if (isDraw) {
+  if (checkDraw()) {
     proccessDraw();
+    return true;
   }
+  return false;
 }
 
 function proccessDraw() {
@@ -87,7 +150,7 @@ function proccessDraw() {
 }
 
 function proccessWinner(winner) {
-  if (winner === "X") {
+  if (winner === "X") {j
     playerXScore++;
     alert("Player X wins!");
   } else if (winner === "O") {
@@ -95,7 +158,6 @@ function proccessWinner(winner) {
     alert("Player O wins!");
   }
   updateScores();
-  console.log("proccess winner");
   clearBoard();
 }
 
