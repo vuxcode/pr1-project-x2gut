@@ -22,7 +22,7 @@ var winConditions = [
   [2, 4, 6],
 ];
 //Easy || Hard
-var botDifficulty = "Hard";
+var botDifficulty = "Easy";
 
 var firstRow = document.getElementById("row-1");
 var secondRow = document.getElementById("row-2");
