@@ -11,13 +11,26 @@ var board = ["-", "-", "-",
              "-", "-", "-"
             ];
 
+var winConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+//Easy || Hard
+var botDifficulty = "Hard";
+
 var firstRow = document.getElementById("row-1");
 var secondRow = document.getElementById("row-2");
 var thirdRow = document.getElementById("row-3");
 
 var themeButton = document.getElementById("theme-button");
 var gamemodeButton = document.getElementById("gamemode-button");
-var gamemodeButton = document.getElementById("gamemode-button");
+var difficultyButton = document.getElementById("difficulty-button");
 
 themeButton.addEventListener("click", () => {
   var innerCircle = document.querySelector(".inner-circle");
@@ -34,19 +47,22 @@ themeButton.addEventListener("click", () => {
 });
 
 gamemodeButton.addEventListener("click", changeGameMode);
+difficultyButton.addEventListener("click", changeDifficulty);
 
-function changeGameMode() {
-  clearBoard();
+function changeDifficulty() {
   if (gameMode === "twoPlayers") {
-    gameMode = "Bot";
-    gamemodeButton.innerText = "GameMode: 🤖 Bot";
+    alert("You can change difficulty only in Bot mode!");
     return;
   }
-  gameMode = "twoPlayers";
-  gamemodeButton.innerText = "GameMode: 2 Players";
-}
 
-gamemodeButton.addEventListener("click", changeGameMode);
+  if (botDifficulty === "Hard") {
+    botDifficulty = "Easy";
+    difficultyButton.innerText = "Difficulty: 🟢 Easy";
+    return;
+  }
+  botDifficulty = "Hard";
+  difficultyButton.innerText = "Difficulty: 🔴 Hard";
+}
 
 function changeGameMode() {
   clearBoard();
@@ -95,8 +111,6 @@ function registerEventListeners(row) {
 function handleClickOnCell(cellId) {
   // Get cell index from cellId for example "cell-1" -> 0
   const cellIndex = Number(cellId.split("-")[1]) - 1;
-  // Get cell index from cellId for example "cell-1" -> 0
-  const cellIndex = Number(cellId.split("-")[1]) - 1;
 
   // If cell is already taken we do nothing
   if (board[cellIndex] !== "-") return;
@@ -121,43 +135,21 @@ function handleClickOnCell(cellId) {
   }, 50);
 }
 
-function handleBotMove() {
-  // ------Simple bot that makes random moves------
-
-  // Here we collect all cells that look like "-" and pushing it to the array
-  let emptyCells = [];
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === "-") {
-      emptyCells.push(i);
+function getBestMove(playerMark) {
+  for (let i = 0; i < winConditions.length; i++) {
+    const condition = winConditions[i];
+    const [a, b, c] = condition;
+    const marks = [board[a], board[b], board[c]];
+    const playerMarksCount = marks.filter((mark) => mark === playerMark).length;
+    if (playerMarksCount === 2) {
+      return condition.find((index) => board[index] === "-");
     }
   }
-  // If there is no empty cells we do nothing
-  if (emptyCells.length === 0) {
-  // If cell is already taken we do nothing
-  if (board[cellIndex] !== "-") return;
-
-  makeMove(cellIndex, currentPlayer);
-
-  // Here we have a timeout to allow the DOM to update before checking for game end
-  setTimeout(() => {
-    if (checkGameEnd()) return;
-
-    changeTurn();
-
-    if (gameMode === "Bot") {
-      handleBotMove();
-
-      // Same timeout to allow DOM update but after bot move
-      setTimeout(() => {
-        if (checkGameEnd()) return;
-        changeTurn();
-      }, 50);
-    }
-  }, 50);
+  return false;
 }
 
 function handleBotMove() {
-  // ------Simple bot that makes random moves------
+  // ------Simple bot that makes random moves (or trying to prevent player's win, depends on difficulty)------
 
   // Here we collect all cells that look like "-" and pushing it to the array
   let emptyCells = [];
@@ -174,23 +166,19 @@ function handleBotMove() {
   let randomIndex = Math.floor(Math.random() * emptyCells.length);
   let botMove = emptyCells[randomIndex];
 
-  makeMove(botMove, currentPlayer);
-}
-
-function makeMove(index, player) {
-  // Update the board array and the DOM
-  board[index] = player;
-  const cellElement = document.getElementById(`cell-${index + 1}`);
-  const mark = document.createElement("div");
-  mark.className = "mark-" + player.toLowerCase();
-  cellElement.appendChild(mark);
-}
-
-function checkGameEnd() {
-  const winner = checkWinner();
-  // Getting random index from emptyCells array
-  let randomIndex = Math.floor(Math.random() * emptyCells.length);
-  let botMove = emptyCells[randomIndex];
+  // ------Hard bot that blocks player from winning------
+  if (botDifficulty === "Hard") {
+    const playerMark = currentPlayer === "X" ? "O" : "X";
+    const possiblePlayerWinIndex = getBestMove(playerMark);
+    if (possiblePlayerWinIndex) {
+      botMove = possiblePlayerWinIndex;
+    } else {
+      const possibleBotWinIndex = getBestMove(currentPlayer);
+      if (possibleBotWinIndex) {
+        botMove = possibleBotWinIndex;
+      }
+    }
+  }
 
   makeMove(botMove, currentPlayer);
 }
@@ -209,15 +197,11 @@ function checkGameEnd() {
   if (winner) {
     proccessWinner(winner);
     return true;
-    return true;
   }
-  if (checkDraw()) {
   if (checkDraw()) {
     proccessDraw();
     return true;
-    return true;
   }
-  return false;
   return false;
 }
 
@@ -227,7 +211,7 @@ function proccessDraw() {
 }
 
 function proccessWinner(winner) {
-  if (winner === "X") {j
+  if (winner === "X") {
     playerXScore++;
     alert("Player X wins!");
   } else if (winner === "O") {
@@ -254,17 +238,6 @@ function checkDraw() {
 }
 
 function checkWinner() {
-  var winConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
   for (var i = 0; i < winConditions.length; i++) {
     var condition = winConditions[i];
     const [a, b, c] = condition;
