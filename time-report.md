@@ -2,8 +2,6 @@
 
 > Write about what you have done and how long you have worked on each part of the project.
 
-For example: 
-
 - 2025-12-01 Worked for 1 hour total.
 
   - *Added HTML layout and CSS styles for the future game.*
@@ -21,3 +19,4 @@ For example:
 
 - 2025-12-04 Worked for 2 hours total.
   -  *Added difficulty to the bot, so now it makes more conscious moves.*
+
