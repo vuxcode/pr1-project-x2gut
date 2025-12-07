@@ -20,3 +20,7 @@
 - 2025-12-04 Worked for 2 hours total.
   -  *Added difficulty to the bot, so now it makes more conscious moves.*
 
+- 2025-12-07 Worked for 30 minutes total.
+  - *Implemented input block to block user's input while proccessing winner .*
+  - *Added additional styles to cell when there is a winner.*
+
