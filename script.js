@@ -21,6 +21,8 @@ var winConditions = [
   [0, 4, 8],
   [2, 4, 6],
 ];
+// This variable neends to block input when we have a winner to prevent further moves
+var blockInput = false;
 //Easy || Hard
 var botDifficulty = "Easy";
 
@@ -32,16 +34,15 @@ var themeButton = document.getElementById("theme-button");
 var gamemodeButton = document.getElementById("gamemode-button");
 var difficultyButton = document.getElementById("difficulty-button");
 
+// Theme toggle button
 themeButton.addEventListener("click", () => {
-  var innerCircle = document.querySelector(".inner-circle");
+  // Toggle dark mode and makes inner circle visible/invisible for moon animation
   var innerCircle = document.querySelector(".inner-circle");
   if (document.body.className === "dark") {
     document.body.className = "";
     innerCircle.classList.remove("visible");
-    innerCircle.classList.remove("visible");
     return;
   }
-  innerCircle.classList.add("visible");
   innerCircle.classList.add("visible");
   document.body.className = "dark";
 });
@@ -85,6 +86,7 @@ function clearBoard() {
   for (let i = 1; i <= 9; i++) {
     var cellElement = document.getElementById(`cell-${i}`);
     cellElement.innerHTML = "";
+    cellElement.classList.remove("active");
   }
 }
 
@@ -109,6 +111,7 @@ function registerEventListeners(row) {
 }
 
 function handleClickOnCell(cellId) {
+  if (blockInput) return;
   // Get cell index from cellId for example "cell-1" -> 0
   const cellIndex = Number(cellId.split("-")[1]) - 1;
 
@@ -211,15 +214,19 @@ function proccessDraw() {
 }
 
 function proccessWinner(winner) {
-  if (winner === "X") {
-    playerXScore++;
-    alert("Player X wins!");
-  } else if (winner === "O") {
-    playerOScore++;
-    alert("Player O wins!");
-  }
-  updateScores();
-  clearBoard();
+  blockInput = true;
+  setTimeout(() => {
+    if (winner === "X") {
+      playerXScore++;
+      alert("Player X wins!");
+    } else if (winner === "O") {
+      playerOScore++;
+      alert("Player O wins!");
+    }
+    updateScores();
+    clearBoard();
+    blockInput = false;
+  }, 300);
 }
 
 function changeTurn() {
@@ -247,6 +254,11 @@ function checkWinner() {
     }
 
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      for (let i = 0; i < condition.length; i++) {
+        let cellIndex = condition[i];
+        let cellElement = document.getElementById(`cell-${cellIndex + 1}`);
+        cellElement.classList.add("active");
+      }
       return board[a];
     }
   }

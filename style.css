@@ -104,10 +104,15 @@ header {
   position: relative;
   background-color: var(--cell-bg);
   border: 2px solid --cell-border;
-  border: 2px solid --cell-border;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0;
+  transition: background-color 0.3s ease;
+}
+
+.cell.active {
+  background-color: #58ff42;
+  opacity: 50%;
 }
 
 .mark-x {
