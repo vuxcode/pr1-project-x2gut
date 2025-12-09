@@ -24,3 +24,6 @@
   - *Implemented input block to block user's input while proccessing winner .*
   - *Added additional styles to cell when there is a winner.*
 
+- 2025-12-09 Worked for 30 minutes total.
+  - *Updated comments to make the code more clear for the presentation.*
+
